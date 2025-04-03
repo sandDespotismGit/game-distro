@@ -1,24 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import { createHashRouter, RouterProvider } from "react-router-dom";
+import { ChakraProvider } from "@chakra-ui/react";
+
+import RootStore from "./store/root_store";
+import { RootStoreContext } from "./store/store_context";
+
+import MainPage from "./pages/main_page";
+import AuthPage from "./pages/auth_page";
+import BioPage from "./pages/bio_page";
+import theme from "./theme";
+import EditProfilePage from "./pages/edit_profile_page";
+import OrderPage from "./pages/order_page";
+import BuyPage from "./pages/buy_page";
+
+const router = createHashRouter([
+  {
+    path: "/",
+    element: <MainPage />,
+  },
+  {
+    path: "/auth",
+    element: <AuthPage />,
+  },
+  {
+    path: "/bio",
+    element: <BioPage />,
+  },
+  {
+    path: "/edit_profile",
+    element: <EditProfilePage />,
+  },
+  {
+    path: "/order",
+    element: <OrderPage />,
+  },
+  {
+    path: "/buy",
+    element: <BuyPage />,
+  },
+]);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RootStoreContext.Provider value={new RootStore()}>
+      <ChakraProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ChakraProvider>
+    </RootStoreContext.Provider>
   );
 }
 
