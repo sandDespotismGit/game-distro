@@ -25,7 +25,7 @@ const Header = observer(({ router, isBuy }) => {
         justify={"space-between"}
         padding={"8px 32px"}
         borderBottom={
-          userStore.user_info?.is_seller && router != "login"
+          userStore.user_info?.is_seller && router != "login" || isBuy
             ? "1px solid rgba(56, 72, 87, 1)"
             : null
         }
@@ -53,7 +53,11 @@ const Header = observer(({ router, isBuy }) => {
                 _hover={{
                   textDecoration: "underline",
                 }}
-                onClick={() => navigate("/auth")}
+                onClick={() => {
+                  pageStore.updateOpenProfile(false);
+                  pageStore.updateOpenCart(false);
+                  navigate("/auth");
+                }}
               >
                 Вход/регистрация
               </Text>

@@ -82,11 +82,11 @@ const Cart = observer(({ isBuy }) => {
               ? "1px solid rgba(56, 72, 87, 1)"
               : null
           }
-          borderTop={
-            pageStore.is_open_cart && width > 600
-              ? "1px solid rgba(56, 72, 87, 1)"
-              : "none"
-          }
+          // borderTop={
+          //   pageStore.is_open_cart && width > 600
+          //     ? "1px solid rgba(56, 72, 87, 1)"
+          //     : "none"
+          // }
         >
           <VStack
             position={"relative"}

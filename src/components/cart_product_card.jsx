@@ -123,7 +123,7 @@ const CartProductCard = observer(({ obj }) => {
           bg: "rgba(56, 72, 87, 1)",
         }}
         onClick={async () =>
-          pageStore.auth_token ? await handleCart() : handleToTempCart()
+          userStore.auth_token ? await handleCart() : handleToTempCart()
         }
       >
         <Text

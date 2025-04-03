@@ -186,7 +186,7 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
                 padding={"0 10px"}
                 width={"40%"}
                 onClick={async () =>
-                  pageStore.auth_token ? await handleCart() : handleToTempCart()
+                  userStore.auth_token ? await handleCart() : handleToTempCart()
                 }
               >
                 <Text color={"rgba(248, 250, 252, 1)"} fontWeight={"500"}>

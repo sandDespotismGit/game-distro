@@ -62,11 +62,11 @@ const Profile = observer(({ isBuy }) => {
               ? "1px solid rgba(56, 72, 87, 1)"
               : null
           }
-          borderTop={
-            !userStore.user_info?.is_seller
-              ? "1px solid rgba(56, 72, 87, 1)"
-              : null
-          }
+          // borderTop={
+          //   !userStore.user_info?.is_seller
+          //     ? "1px solid rgba(56, 72, 87, 1)"
+          //     : null
+          // }
         >
           <VStack
             position={"relative"}
@@ -275,6 +275,7 @@ const Profile = observer(({ isBuy }) => {
               onClick={() => {
                 pageStore.updateOpenProfile(false);
                 userStore.resetUser();
+                pageStore.resetFilters();
                 navigate("/auth");
               }}
             >

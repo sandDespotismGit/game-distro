@@ -249,7 +249,7 @@ const ProductCard = observer(({ obj = {} }) => {
             zIndex={10}
             cursor={"pointer"}
             onClick={async () =>
-              pageStore.auth_token ? await handleCart() : handleToTempCart()
+              userStore.auth_token ? await handleCart() : handleToTempCart()
             }
           />
         </HStack>

@@ -77,6 +77,7 @@ class pageStore {
     this.updateSelectedProducer(null);
     this.updateMinPrice(null);
     this.updateMaxPrice(null);
+    this.updateSearchBar("");
   };
 
   getAllGames = async () => {
