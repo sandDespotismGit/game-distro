@@ -131,7 +131,10 @@ const Cart = observer(({ isBuy }) => {
                     bg: "rgba(0, 84, 87, 1)",
                     border: "1px solid rgba(112, 239, 222, 1)",
                   }}
-                  onClick={() => navigate("/buy")}
+                  onClick={() => {
+                    navigate("/buy");
+                    pageStore.updateOpenCart(false);
+                  }}
                 >
                   <Text
                     color={"rgba(248, 250, 252, 1)"}

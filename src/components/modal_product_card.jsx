@@ -171,8 +171,10 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
                 >
                   {obj?.price == "0" ? "Free" : `${obj?.price} ₽`}
                 </Text>
-                {obj?.price == "0" ? null : (
-                  <Text color={"rgba(248, 250, 252, 1)"}>2000 ₽</Text>
+                {obj?.price == "0" || userStore.boughts.length != 0 ? null : (
+                  <Text color={"rgba(248, 250, 252, 1)"}>
+                    {parseInt(Number(obj?.price * 0.95))} ₽
+                  </Text>
                 )}
               </HStack>
               <Button
@@ -205,7 +207,7 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
             overflowX={"scroll"}
             padding={"10px 0"}
           >
-            {obj?.genre.split(", ").map((item, index) => {
+            {obj?.genre.split(",").map((item, index) => {
               return (
                 <Stack
                   key={index}
