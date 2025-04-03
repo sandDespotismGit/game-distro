@@ -30,11 +30,19 @@ const Header = observer(({ router, isBuy }) => {
             : null
         }
       >
-        <Image src={logo} cursor={"pointer"} onClick={() => navigate("/")} />
+        <Image
+          src={logo}
+          cursor={"pointer"}
+          onClick={() => {
+            navigate("/");
+            pageStore.updateOpenProfile(false);
+            pageStore.updateOpenCart(false);
+          }}
+        />
         {router != "login" ? (
           <HStack gap={"16px"}>
-            {!userStore.user_info?.is_seller && <Cart isBuy={isBuy}/>}
-            {userStore.auth_token != "" && <Profile isBuy={isBuy}/>}
+            {!userStore.user_info?.is_seller && <Cart isBuy={isBuy} />}
+            {userStore.auth_token != "" && <Profile isBuy={isBuy} />}
 
             {userStore.auth_token == "" && (
               <Text
@@ -76,6 +84,10 @@ const Header = observer(({ router, isBuy }) => {
           borderBottom={"1px solid rgba(56, 72, 87, 1)"}
           borderBottomEndRadius={"6px"}
           borderBottomStartRadius={"6px"}
+          onClick={() => {
+            pageStore.updateOpenProfile(false);
+            pageStore.updateOpenCart(false);
+          }}
         >
           <Text
             cursor={"pointer"}

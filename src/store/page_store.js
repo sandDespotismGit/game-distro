@@ -15,9 +15,7 @@ class pageStore {
   max_price = null;
 
   filteredProducts = {};
-
   sort = [1, 0, 0, 0];
-
   search_bar = "";
 
   genre = [
@@ -52,7 +50,6 @@ class pageStore {
   updateOpenFilters = (new_filters) => {
     this.is_open_filters = new_filters;
   };
-
   updateSelectedGenre = (new_genre) => {
     this.selected_genre = new_genre;
   };
@@ -65,14 +62,12 @@ class pageStore {
   updateMaxPrice = (new_price) => {
     this.max_price = new_price;
   };
-
   updateFilteredProducts = (new_prod) => {
     this.filteredProducts = new_prod;
   };
   updateSort = (new_sort) => {
     this.sort = new_sort;
   };
-
   updateSearchBar = (new_bar) => {
     this.search_bar = new_bar;
   };

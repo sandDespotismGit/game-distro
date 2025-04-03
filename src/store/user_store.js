@@ -7,7 +7,6 @@ class userStore {
   cart = [];
 
   boughts = [];
-
   temp_data = {};
 
   constructor() {
@@ -57,6 +56,9 @@ class userStore {
     console.log(result);
     if (response.ok) {
       await this.getMe();
+      if (this.cart?.length != 0) {
+        this.cart.map(async (item) => await this.addToCart(item?.id));
+      }
       await this.getCart();
       await this.getBought();
     }

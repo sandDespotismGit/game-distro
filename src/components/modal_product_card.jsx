@@ -45,6 +45,31 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
 
   const isInCart = userStore.cart.some((item) => item?.id == obj?.id);
 
+  // для незарегистрированного пользователя
+  const handleToTempCart = () => {
+    let newCart;
+
+    if (isInCart) {
+      newCart = userStore.cart.filter((item) => item?.id != obj?.id);
+      toast({
+        title: "Товар удален из корзины",
+        status: "info",
+        duration: 2000,
+        isClosable: true,
+      });
+      userStore.updateCart(newCart);
+    } else {
+      newCart = [...userStore.cart, obj];
+      toast({
+        title: "Товар добавлен в корзину",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+      userStore.updateCart(newCart);
+    }
+  };
+
   const handleCart = async () => {
     if (isInCart) {
       const ok = await deleteToCart();
@@ -160,7 +185,9 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
                 height={"60px"}
                 padding={"0 10px"}
                 width={"40%"}
-                onClick={async () => await handleCart()}
+                onClick={async () =>
+                  pageStore.auth_token ? await handleCart() : handleToTempCart()
+                }
               >
                 <Text color={"rgba(248, 250, 252, 1)"} fontWeight={"500"}>
                   {isInCart ? "Убрать" : "В корзину"}

@@ -34,6 +34,22 @@ const CartProductCard = observer(({ obj }) => {
 
   const isInCart = userStore.cart.some((item) => item?.id == obj?.id);
 
+  // для незарегистрированного пользователя
+  const handleToTempCart = () => {
+    let newCart;
+
+    if (isInCart) {
+      newCart = userStore.cart.filter((item) => item?.id != obj?.id);
+      toast({
+        title: "Товар удален из корзины",
+        status: "info",
+        duration: 2000,
+        isClosable: true,
+      });
+      userStore.updateCart(newCart);
+    }
+  };
+
   const handleCart = async () => {
     if (isInCart) {
       const ok = await deleteToCart();
@@ -106,7 +122,9 @@ const CartProductCard = observer(({ obj }) => {
         _hover={{
           bg: "rgba(56, 72, 87, 1)",
         }}
-        onClick={handleCart}
+        onClick={async () =>
+          pageStore.auth_token ? await handleCart() : handleToTempCart()
+        }
       >
         <Text
           color={"rgba(248, 250, 252, 1)"}

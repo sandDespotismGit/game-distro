@@ -141,7 +141,7 @@ const Cart = observer(({ isBuy }) => {
                     К оформлению
                   </Text>
                 </Button>
-                <Text color={"white"} marginTop={"10px"}>
+                <Text color={"white"} marginTop={"10px"} width={"max-content"}>
                   Сумма:{" "}
                   {userStore.boughts == 0 ? parseInt(sumWithSale) : sumCart} ₽
                 </Text>
