@@ -181,7 +181,11 @@ const BuyPage = observer(() => {
                   </Td>
                   <Td>
                     <Text>
-                      {elem?.price == "0" ? "Бесплатно" : `${elem?.price} ₽`}
+                      {elem?.price == "0"
+                        ? "Бесплатно"
+                        : userStore.boughts?.length == 0
+                        ? `${parseInt(Number(elem?.price * 0.95))} ₽`
+                        : `${elem?.price} ₽`}
                     </Text>
                   </Td>
                   <Td>
