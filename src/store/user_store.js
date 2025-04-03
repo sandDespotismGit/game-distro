@@ -61,6 +61,7 @@ class userStore {
       }
       await this.getCart();
       await this.getBought();
+      await this.setDiscount();
     }
     return response.ok;
   };
@@ -230,8 +231,21 @@ class userStore {
     });
     if (response.ok) {
       await this.getMe();
+      this.setDiscount();
     }
     return response;
+  };
+
+  setDiscount = async () => {
+    const response = await fetch(
+      `${base_url}/discount?discount=${this.boughts?.length != 0 ? 0 : 5}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
   };
 }
 

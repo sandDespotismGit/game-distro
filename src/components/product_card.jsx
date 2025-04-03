@@ -218,7 +218,11 @@ const ProductCard = observer(({ obj = {} }) => {
                   ? "rgba(112, 239, 222, 1)"
                   : "rgba(248, 250, 252, 1)"
               }
-              textDecoration={obj?.price == "0" ? "none" : "line-through"}
+              textDecoration={
+                obj?.price == "0" || userStore.boughts?.length != 0
+                  ? "none"
+                  : "line-through"
+              }
             >
               {obj?.price == "0" ? "Бесплатно" : `${obj?.price} ₽`}
             </Text>

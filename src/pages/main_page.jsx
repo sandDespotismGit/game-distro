@@ -334,7 +334,7 @@ const MainPage = observer(() => {
                       </Td>
                       <Td>
                         {/* количество продаж */}
-                        <Text>{elem?.count || 0}</Text>
+                        <Text>{elem?.sales || 0}</Text>
                       </Td>
                       <Td>
                         <Image

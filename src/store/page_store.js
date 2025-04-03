@@ -18,6 +18,8 @@ class pageStore {
   sort = [1, 0, 0, 0];
   search_bar = "";
 
+  selected_header = [1, 0, 0, 0];
+
   genre = [
     "Новинка",
     "Одиночная игра",
@@ -71,6 +73,9 @@ class pageStore {
   updateSearchBar = (new_bar) => {
     this.search_bar = new_bar;
   };
+  updateSelectedHeader = (new_select) => {
+    this.selected_header = new_select;
+  };
 
   resetFilters = () => {
     this.updateSelectedGenre(null);
@@ -105,6 +110,7 @@ class pageStore {
         genre: genre,
         price: price,
         platforms: platforms,
+        discount: 0,
       }),
     });
     if (response.ok) {

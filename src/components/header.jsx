@@ -11,8 +11,6 @@ import { observer } from "mobx-react-lite";
 import { useStores } from "../store/store_context";
 
 const Header = observer(({ router, isBuy }) => {
-  const [selected, setSelected] = useState([1, 0, 0, 0]);
-
   const navigate = useNavigate();
   const { width } = useWindowDimensions();
   const { pageStore, userStore } = useStores();
@@ -25,7 +23,7 @@ const Header = observer(({ router, isBuy }) => {
         justify={"space-between"}
         padding={"8px 32px"}
         borderBottom={
-          userStore.user_info?.is_seller && router != "login" || isBuy
+          (userStore.user_info?.is_seller && router != "login") || isBuy
             ? "1px solid rgba(56, 72, 87, 1)"
             : null
         }
@@ -96,7 +94,7 @@ const Header = observer(({ router, isBuy }) => {
           <Text
             cursor={"pointer"}
             color={
-              selected[0] == 1
+              pageStore.selected_header[0] == 1
                 ? "rgba(112, 239, 222, 1)"
                 : "rgba(248, 250, 252, 1)"
             }
@@ -104,14 +102,17 @@ const Header = observer(({ router, isBuy }) => {
               color: "rgba(112, 239, 222, 1)",
             }}
             transition={"color 0.2s ease"}
-            onClick={() => setSelected([1, 0, 0, 0])}
+            onClick={() => {
+              pageStore.updateSelectedHeader([1, 0, 0, 0]);
+              navigate("/");
+            }}
           >
             Каталог
           </Text>
           <Text
             cursor={"pointer"}
             color={
-              selected[1] == 1
+              pageStore.selected_header[1] == 1
                 ? "rgba(112, 239, 222, 1)"
                 : "rgba(248, 250, 252, 1)"
             }
@@ -119,14 +120,17 @@ const Header = observer(({ router, isBuy }) => {
               color: "rgba(112, 239, 222, 1)",
             }}
             transition={"color 0.2s ease"}
-            onClick={() => setSelected([0, 1, 0, 0])}
+            onClick={() => {
+              pageStore.updateSelectedHeader([0, 1, 0, 0]);
+              navigate("/recomendation");
+            }}
           >
             Рекомендации
           </Text>
           <Text
             cursor={"pointer"}
             color={
-              selected[2] == 1
+              pageStore.selected_header[2] == 1
                 ? "rgba(112, 239, 222, 1)"
                 : "rgba(248, 250, 252, 1)"
             }
@@ -134,14 +138,14 @@ const Header = observer(({ router, isBuy }) => {
               color: "rgba(112, 239, 222, 1)",
             }}
             transition={"color 0.2s ease"}
-            onClick={() => setSelected([0, 0, 1, 0])}
+            onClick={() => pageStore.updateSelectedHeader([0, 0, 1, 0])}
           >
             Условия возврата
           </Text>
           <Text
             cursor={"pointer"}
             color={
-              selected[3] == 1
+              pageStore.selected_header[3] == 1
                 ? "rgba(112, 239, 222, 1)"
                 : "rgba(248, 250, 252, 1)"
             }
@@ -149,7 +153,7 @@ const Header = observer(({ router, isBuy }) => {
               color: "rgba(112, 239, 222, 1)",
             }}
             transition={"color 0.2s ease"}
-            onClick={() => setSelected([0, 0, 0, 1])}
+            onClick={() => pageStore.updateSelectedHeader([0, 0, 0, 1])}
           >
             Контакты
           </Text>
