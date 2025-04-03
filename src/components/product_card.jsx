@@ -132,7 +132,7 @@ const ProductCard = observer(({ obj = {} }) => {
           onClick={onOpen}
         >
           <Image
-            src={`http://localhost:8000/${obj?.picture_url}`}
+            src={`http://85.192.60.217:8000/${obj?.picture_url}`}
             height={"134px"}
           />
           <HStack

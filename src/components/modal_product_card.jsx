@@ -122,7 +122,7 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
         <ModalCloseButton color={"rgba(248, 250, 252, 1)"} />
         <VStack marginTop={"30px"} gap={0}>
           <Image
-            src={`http://localhost:8000/${obj?.picture_url}`}
+            src={`http://85.192.60.217:8000/${obj?.picture_url}`}
             borderRadius={"8px"}
           />
           <Stack

@@ -338,7 +338,7 @@ const MainPage = observer(() => {
                       </Td>
                       <Td>
                         <Image
-                          src={`http://localhost:8000/${elem?.picture_url}`}
+                          src={`http://85.192.60.217:8000/${elem?.picture_url}`}
                           alt="Нет картинки"
                           height={"80px"}
                           borderRadius={"8px"}

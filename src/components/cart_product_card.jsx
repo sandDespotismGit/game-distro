@@ -74,7 +74,7 @@ const CartProductCard = observer(({ obj }) => {
       gap={0}
     >
       <Image
-        src={`http://localhost:8000/${obj?.picture_url}`}
+        src={`http://85.192.60.217:8000/${obj?.picture_url}`}
         height={"100px"}
         borderTopRadius={"6px"}
       />
