@@ -20,16 +20,24 @@ const Filter = observer(() => {
   const { pageStore } = useStores();
 
   const getUniqueGenres = (products) => {
-    const allGenres = products.flatMap((product) => product?.genre?.split(","));
+    let allGenres = "";
+    if (products?.length > 0) {
+      allGenres = products?.flatMap((product) => product?.genre?.split(","));
+    }
+
     return [...new Set(allGenres)];
   };
 
   const uniqueGenres = getUniqueGenres(pageStore.all_products);
 
   const getUniqueProducer = (products) => {
-    const allProducer = products.flatMap((product) =>
-      product?.producer_name?.split(",")
-    );
+    let allProducer = "";
+    if (products?.length > 0) {
+      allProducer = products?.flatMap((product) =>
+        product?.producer_name?.split(",")
+      );
+    }
+
     return [...new Set(allProducer)];
   };
 
@@ -194,12 +202,9 @@ const Filter = observer(() => {
                     width={"100%"}
                     align={"flex-start"}
                     opacity={openCategory ? 1 : 0}
-                    visibility={openCategory ? "visible" : "collapse"}
-                    transition={
-                      "opacity 0.3s ease, border 0.3s ease, visibility 0.3s ease"
-                    }
+                    display={openCategory ? "flex" : "none"}
                   >
-                    {uniqueGenres.map((item, index) => (
+                    {uniqueGenres?.map((item, index) => (
                       <Text
                         key={index}
                         color={
@@ -284,12 +289,9 @@ const Filter = observer(() => {
                     width={"100%"}
                     align={"flex-start"}
                     opacity={openCreator ? 1 : 0}
-                    visibility={openCreator ? "visible" : "collapse"}
-                    transition={
-                      "opacity 0.3s ease, border 0.3s ease, visibility 0.3s ease"
-                    }
+                    display={openCreator ? "flex" : "none"}
                   >
-                    {uniqueProducer.map((item, index) => (
+                    {uniqueProducer?.map((item, index) => (
                       <Text
                         key={index}
                         color={

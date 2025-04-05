@@ -1,5 +1,6 @@
-import { Grid, GridItem, HStack, Stack, VStack } from "@chakra-ui/react";
+import { Grid, GridItem, VStack } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
+
 import Header from "../components/header";
 import { useStores } from "../store/store_context";
 import useWindowDimensions from "../components/windowDimensions";
@@ -55,7 +56,7 @@ const RecomendationPage = observer(() => {
             margin={"6px 0 16px 0"}
           >
             {userStore.auth_token &&
-              sortedGames.slice(0, 10).map((item, index) => (
+              sortedGames.slice(0, 10)?.map((item, index) => (
                 <GridItem key={index}>
                   <ProductCard obj={item} />
                 </GridItem>

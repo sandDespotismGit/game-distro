@@ -1,6 +1,5 @@
 import { HStack, Image, Text, VStack } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 import useWindowDimensions from "./windowDimensions";
 import Profile from "./profile";

@@ -1,4 +1,4 @@
-import { makeAutoObservable, values } from "mobx";
+import { makeAutoObservable } from "mobx";
 import base_url from "./vars";
 
 class pageStore {
@@ -19,6 +19,9 @@ class pageStore {
   search_bar = "";
 
   selected_header = [1, 0, 0, 0];
+
+  sum_cart_discount = 0;
+  sum_cart = 0;
 
   genre = [
     "Новинка",
@@ -85,6 +88,13 @@ class pageStore {
     this.updateSearchBar("");
   };
 
+  updateSumCartWithDiscount = (new_cart) => {
+    this.sum_cart_discount = new_cart;
+  };
+  updateSumCart = (new_cart) => {
+    this.sum_cart = new_cart;
+  };
+
   getAllGames = async () => {
     const response = await fetch(`${base_url}/games`, {
       method: "GET",
@@ -96,7 +106,15 @@ class pageStore {
     this.all_products = result;
   };
 
-  createGame = async (auth_token, name, desc, genre, price, platforms) => {
+  createGame = async (
+    auth_token,
+    name,
+    desc,
+    genre,
+    price,
+    platforms,
+    discount
+  ) => {
     const response = await fetch(`${base_url}/games`, {
       method: "POST",
       headers: {
@@ -110,7 +128,7 @@ class pageStore {
         genre: genre,
         price: price,
         platforms: platforms,
-        discount: 0,
+        discount: discount,
       }),
     });
     if (response.ok) {
@@ -129,7 +147,6 @@ class pageStore {
       },
       body: formData,
     });
-    console.log("add photo", response);
     if (response.ok) {
       await this.getAllGames();
     }
@@ -145,6 +162,7 @@ class pageStore {
       },
       body: JSON.stringify({
         name: values?.name,
+        discount: values?.discount,
         description: values?.description,
         genre: values?.genre.join(),
         price: values?.price,

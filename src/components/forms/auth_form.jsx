@@ -15,11 +15,10 @@ import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import { observer } from "mobx-react-lite";
 
 import useWindowDimensions from "../windowDimensions";
 import { useStores } from "../../store/store_context";
-import { observer } from "mobx-react-lite";
-import { values } from "mobx";
 
 const AuthForm = observer(() => {
   const [typeForm, setTypeForm] = useState("login");
@@ -31,7 +30,7 @@ const AuthForm = observer(() => {
   const navigate = useNavigate();
   const toast = useToast();
   const { width } = useWindowDimensions();
-  const { userStore, pageStore } = useStores();
+  const { userStore } = useStores();
 
   const toggleForm = (newType) => {
     setShowForm(false);
@@ -86,9 +85,7 @@ const AuthForm = observer(() => {
 
   const handleRegister = async (values, { setSubmitting }) => {
     setIsSubmitting(true);
-    console.log(values);
     const ok = await register(values?.login, values?.password, isSeller);
-    console.log("ok", ok);
     if (ok) {
       setIsSubmitting(false);
       setSubmitting(false);
@@ -115,7 +112,6 @@ const AuthForm = observer(() => {
 
   const handleResetPassword = async (values, { setSubmitting }) => {
     setIsSubmitting(true);
-    console.log("data rec", values);
     const ok = await sendRestorePassword(values);
     if (ok) {
       setIsSubmitting(false);
@@ -141,8 +137,7 @@ const AuthForm = observer(() => {
     }
   };
 
-  const handleResetCode = async (values, { setSubmitting }) => {
-    // setIsSubmitting(true);
+  const handleResetCode = async (values) => {
     const ok = await resetPassword(values);
     if (ok) {
       toast({
@@ -179,9 +174,8 @@ const AuthForm = observer(() => {
             })}
             onSubmit={handleLogin}
           >
-            {({ values, errors, touched, handleChange, handleBlur }) => (
+            {({ errors, touched, handleChange, handleBlur }) => (
               <Form>
-                {/* {console.log(values)}  */}
                 <VStack
                   width={
                     width >= 1440
@@ -511,7 +505,6 @@ const AuthForm = observer(() => {
           >
             {({ values, errors, touched, handleChange, handleBlur }) => (
               <Form>
-                {console.log(values)}
                 <VStack
                   width={
                     width >= 1440

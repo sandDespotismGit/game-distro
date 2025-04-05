@@ -19,11 +19,10 @@ import ModalProductCard from "./modal_product_card";
 import { observer } from "mobx-react-lite";
 import { useStores } from "../store/store_context";
 import base_url from "../store/vars";
-import { useState } from "react";
 
 const ProductCard = observer(({ obj = {} }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { pageStore, userStore } = useStores();
+  const { userStore } = useStores();
   const toast = useToast();
 
   const { width } = useWindowDimensions();
@@ -53,7 +52,7 @@ const ProductCard = observer(({ obj = {} }) => {
     let newCart;
 
     if (isInCart) {
-      newCart = userStore.cart.filter((item) => item?.id != obj?.id);
+      newCart = userStore.cart?.filter((item) => item?.id != obj?.id);
       toast({
         title: "Товар удален из корзины",
         status: "info",
@@ -132,7 +131,7 @@ const ProductCard = observer(({ obj = {} }) => {
           onClick={onOpen}
         >
           <Image
-            src={`http://85.192.60.217:8000/${obj?.picture_url}`}
+            src={`http://212.41.9.251:8013/${obj?.picture_url}`}
             height={"134px"}
           />
           <HStack
@@ -144,7 +143,7 @@ const ProductCard = observer(({ obj = {} }) => {
             overflowX={"scroll"}
             padding={"10px 0"}
           >
-            {obj?.genre.split(",").map((item, index) => (
+            {obj?.genre?.split(",")?.map((item, index) => (
               <Stack
                 key={index}
                 border={"1px solid rgba(50, 139, 255, 1)"}
@@ -190,7 +189,7 @@ const ProductCard = observer(({ obj = {} }) => {
               {obj?.name}
             </Text>
             <HStack gap={"4px"}>
-              {obj?.platforms.split(",").map((item, index) => (
+              {obj?.platforms?.split(",")?.map((item, index) => (
                 <Image
                   key={index}
                   src={item == "windows" ? windowsIcon : appleIcon}
@@ -219,14 +218,14 @@ const ProductCard = observer(({ obj = {} }) => {
                   : "rgba(248, 250, 252, 1)"
               }
               textDecoration={
-                obj?.price == "0" || userStore.boughts?.length != 0
+                obj?.price == "0" || obj?.discount == "0"
                   ? "none"
                   : "line-through"
               }
             >
               {obj?.price == "0" ? "Бесплатно" : `${obj?.price} ₽`}
             </Text>
-            {obj?.price == "0" || userStore.boughts.length != 0 ? null : (
+            {obj?.price == "0" || obj?.discount == "0" ? null : (
               <Stack
                 // height={"28px"}
                 borderRadius={"100px"}
@@ -242,7 +241,7 @@ const ProductCard = observer(({ obj = {} }) => {
                   fontWeight={"600"}
                   lineHeight={"24px"}
                 >
-                  {parseInt(Number(obj?.price * 0.95))} ₽
+                  {parseInt(Number(obj?.price * (1 - obj?.discount / 100)))} ₽
                 </Text>
               </Stack>
             )}

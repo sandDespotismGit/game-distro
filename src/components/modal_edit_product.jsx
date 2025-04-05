@@ -25,19 +25,16 @@ import { useStores } from "../store/store_context";
 const ModalEditProduct = observer(({ obj = {} }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [file, setFile] = useState("");
-  console.log(file);
   const { pageStore, userStore } = useStores();
   const toast = useToast();
 
   const updateGame = async (values) => {
-    console.log("values", values);
     return await pageStore.updateGame(obj?.id, userStore.auth_token, values);
   };
 
   const addPhoto = async (image) => {
     const formData = new FormData();
     formData.append("image", image);
-    console.log("form", formData);
     await pageStore.addPhotoToGame(obj?.id, userStore.auth_token, formData);
   };
 
@@ -113,6 +110,7 @@ const ModalEditProduct = observer(({ obj = {} }) => {
               platforms: obj?.platforms.split(","),
               description: obj?.description,
               price: obj?.price,
+              discount: obj?.discount,
             }}
             validationSchema={Yup.object({
               name: Yup.string().required("Обязательное поле"),
@@ -120,6 +118,10 @@ const ModalEditProduct = observer(({ obj = {} }) => {
               platforms: Yup.array().min(1, "Выберите хотя бы одно поле"),
               description: Yup.string().required("Обязательное поле"),
               price: Yup.number().required("Обязательное поле"),
+              discount: Yup.number()
+                .min(0)
+                .max(100)
+                .required("Введите скидку, ноль если скидки нет"),
             })}
             onSubmit={handleUpdateGame}
           >
@@ -268,6 +270,35 @@ const ModalEditProduct = observer(({ obj = {} }) => {
                     </FormErrorMessage>
                     <Text color={"white"} fontSize={"12px"} marginTop={"2px"}>
                       Если игра бесплатная, то ставь 0
+                    </Text>
+                  </FormControl>
+                  <FormControl isInvalid={errors.discount && touched.discount}>
+                    <Text fontWeight={"500"} color={"rgba(248, 250, 252, 1)"}>
+                      Скидка
+                    </Text>
+                    <Input
+                      value={values?.discount}
+                      marginTop={"4px"}
+                      fontFamily={"Inter"}
+                      placeholder="Скидка"
+                      name="discount"
+                      height={"40px"}
+                      width={"40%"}
+                      background={"rgba(14, 18, 22, 1)"}
+                      border={"1px solid rgba(56, 72, 87, 1)"}
+                      borderRadius={"8px"}
+                      color={"rgba(248, 250, 252, 1)"}
+                      _placeholder={{
+                        color: "rgba(148, 163, 184, 1)",
+                      }}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    <FormErrorMessage margin={"2px"} fontSize={"12px"}>
+                      {errors.discount}
+                    </FormErrorMessage>
+                    <Text color={"white"} fontSize={"12px"} marginTop={"2px"}>
+                      Если скидки нет, то ставь 0
                     </Text>
                   </FormControl>
 

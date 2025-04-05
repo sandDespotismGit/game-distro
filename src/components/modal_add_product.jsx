@@ -16,7 +16,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import useWindowDimensions from "./windowDimensions";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useStores } from "../store/store_context";
@@ -24,14 +23,11 @@ import { observer } from "mobx-react-lite";
 import { useState } from "react";
 
 const ModalAddProduct = observer(() => {
-  const { width } = useWindowDimensions();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { pageStore, userStore } = useStores();
   const toast = useToast();
 
   const [file, setFile] = useState("");
-
-  console.log(file[0]);
 
   const createGame = async (
     auth_token,
@@ -39,7 +35,8 @@ const ModalAddProduct = observer(() => {
     desc,
     genre,
     price,
-    platforms
+    platforms,
+    discount
   ) => {
     return await pageStore.createGame(
       auth_token,
@@ -47,14 +44,14 @@ const ModalAddProduct = observer(() => {
       desc,
       genre,
       price,
-      platforms
+      platforms,
+      discount
     );
   };
 
   const addPhoto = async (id, image) => {
     const formData = new FormData();
     formData.append("image", image);
-    console.log("form", formData);
     await pageStore.addPhotoToGame(id, userStore.auth_token, formData);
   };
 
@@ -65,7 +62,8 @@ const ModalAddProduct = observer(() => {
       values?.description,
       values?.genre.join(),
       values?.price,
-      values?.platforms.join()
+      values?.platforms.join(),
+      values?.discount
     );
     if (result?.message == "Game created") {
       toast({
@@ -138,6 +136,7 @@ const ModalAddProduct = observer(() => {
               platforms: [],
               description: "",
               price: "",
+              discount: "",
             }}
             validationSchema={Yup.object({
               name: Yup.string().required("Обязательное поле"),
@@ -147,6 +146,7 @@ const ModalAddProduct = observer(() => {
               platforms: Yup.array().min(1, "Выберите хотя бы одно поле"),
               description: Yup.string().required("Обязательное поле"),
               price: Yup.number().required("Обязательное поле"),
+              discount: Yup.number().required("Обязательное поле"),
             })}
             onSubmit={handleCreateGame}
           >
@@ -159,7 +159,6 @@ const ModalAddProduct = observer(() => {
               setFieldValue,
             }) => (
               <Form>
-                {console.log(values)}
                 <VStack
                   marginTop={"20px"}
                   width={"100%"}
@@ -276,6 +275,7 @@ const ModalAddProduct = observer(() => {
                       fontFamily={"Inter"}
                       placeholder="Цена"
                       name="price"
+                      type="number"
                       height={"40px"}
                       width={"40%"}
                       background={"rgba(14, 18, 22, 1)"}
@@ -296,6 +296,35 @@ const ModalAddProduct = observer(() => {
                     </Text>
                   </FormControl>
 
+                  <FormControl isInvalid={errors.discount && touched.discount}>
+                    <Text fontWeight={"500"} color={"rgba(248, 250, 252, 1)"}>
+                      Скидка
+                    </Text>
+                    <Input
+                      marginTop={"4px"}
+                      fontFamily={"Inter"}
+                      placeholder="Скидка"
+                      name="discount"
+                      type="number"
+                      height={"40px"}
+                      width={"40%"}
+                      background={"rgba(14, 18, 22, 1)"}
+                      border={"1px solid rgba(56, 72, 87, 1)"}
+                      borderRadius={"8px"}
+                      color={"rgba(248, 250, 252, 1)"}
+                      _placeholder={{
+                        color: "rgba(148, 163, 184, 1)",
+                      }}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    <FormErrorMessage margin={"2px"} fontSize={"12px"}>
+                      {errors.discount}
+                    </FormErrorMessage>
+                    <Text color={"white"} fontSize={"12px"} marginTop={"2px"}>
+                      Если скидки нет, то ставь 0
+                    </Text>
+                  </FormControl>
                   <FormControl>
                     <Text fontWeight={"500"} color={"rgba(248, 250, 252, 1)"}>
                       Изображение

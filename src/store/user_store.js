@@ -1,5 +1,6 @@
-import { makeAutoObservable, values } from "mobx";
+import { makeAutoObservable } from "mobx";
 import base_url from "./vars";
+import Cookies from "js-cookie";
 
 class userStore {
   auth_token = "";
@@ -12,7 +13,9 @@ class userStore {
   constructor() {
     makeAutoObservable(this);
   }
-
+  updateToken = (new_token) => {
+    this.auth_token = new_token;
+  };
   resetUser = () => {
     this.auth_token = "";
     this.user_info = {};
@@ -23,17 +26,17 @@ class userStore {
     this.cart = new_cart;
   };
 
-  getMe = async () => {
+  getMe = async (token) => {
     const response = await fetch(`${base_url}/me`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${this.auth_token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     const result = await response.json();
     this.user_info = result;
-    console.log("getme", result);
+    return response.ok;
   };
 
   register = async (username, password, is_seller) => {
@@ -50,18 +53,15 @@ class userStore {
       }),
     });
 
-    console.log(response);
     const result = await response.json();
     this.auth_token = result.access_token;
-    console.log(result);
     if (response.ok) {
-      await this.getMe();
+      await this.getMe(this.auth_token);
       if (this.cart?.length != 0) {
-        this.cart.map(async (item) => await this.addToCart(item?.id));
+        this.cart?.map(async (item) => await this.addToCart(item?.id));
       }
-      await this.getCart();
-      await this.getBought();
-      await this.setDiscount();
+      await this.getCart(this.auth_token);
+      await this.getBought(this.auth_token);
     }
     return response.ok;
   };
@@ -82,10 +82,15 @@ class userStore {
     if (response.ok) {
       const result = await response.json();
       this.auth_token = result.access_token;
-      await this.getMe();
-      console.log("login", result);
-      await this.getCart();
-      await this.getBought();
+      Cookies.set("auth_token", result.access_token, {
+        expires: 1, // Срок жизни - 1 день
+        secure: false, // Только HTTPS (если не localhost)
+        sameSite: "strict", // Защита от CSRF
+      });
+
+      await this.getMe(this.auth_token);
+      await this.getCart(this.auth_token);
+      await this.getBought(this.auth_token);
     }
 
     return response.ok;
@@ -110,7 +115,7 @@ class userStore {
       }),
     });
     if (response.ok) {
-      await this.getMe();
+      await this.getMe(this.auth_token);
     }
     return response.ok;
   };
@@ -130,7 +135,7 @@ class userStore {
       }),
     });
     if (response.ok) {
-      await this.getMe();
+      await this.getMe(this.auth_token);
     }
     return response.ok;
   };
@@ -165,17 +170,16 @@ class userStore {
     return response.ok;
   };
 
-  getCart = async () => {
+  getCart = async (token) => {
     const response = await fetch(`${base_url}/games/cart`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${this.auth_token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     const result = await response.json();
     this.cart = result;
-    console.log("cart", result);
   };
 
   addToCart = async (id) => {
@@ -187,7 +191,7 @@ class userStore {
       },
     });
     if (response.ok) {
-      await this.getCart();
+      await this.getCart(this.auth_token);
     }
     return response.ok;
   };
@@ -204,25 +208,25 @@ class userStore {
       }
     );
     if (response.ok) {
-      await this.getMe();
+      await this.getMe(this.auth_token);
     }
     return response.ok;
   };
 
-  getBought = async () => {
+  getBought = async (token) => {
     const response = await fetch(`${base_url}/bought`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${this.auth_token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     const result = await response.json();
     this.boughts = result;
   };
 
-  buy = async () => {
-    const response = await fetch(`${base_url}/games/cart/`, {
+  buy = async (price) => {
+    const response = await fetch(`${base_url}/games/cart/?fullprice=${price}`, {
       method: "POST",
       headers: {
         accept: "application/json",
@@ -230,8 +234,8 @@ class userStore {
       },
     });
     if (response.ok) {
-      await this.getMe();
-      this.setDiscount();
+      await this.getMe(this.auth_token);
+      await this.getBought(this.auth_token);
     }
     return response;
   };

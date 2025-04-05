@@ -23,8 +23,6 @@ const BioForm = () => {
   const { width } = useWindowDimensions();
   const { userStore } = useStores();
 
-  console.log(userStore.auth_token, userStore.user_info);
-
   const addFieldMe = async (
     firstName,
     lastName,
@@ -43,7 +41,6 @@ const BioForm = () => {
 
   const handleSumbit = async (values, { setSubmitting }) => {
     setIsSubmitting(true);
-    console.log("values", values);
     const ok = await addFieldMe(
       values?.firstName,
       values?.lastName,
@@ -51,7 +48,6 @@ const BioForm = () => {
       values?.adress,
       values?.phoneNumber
     );
-    console.log("ok", ok);
     if (ok) {
       toast({
         title: "Успех",

@@ -22,7 +22,7 @@ import base_url from "../store/vars";
 
 const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
   const { width } = useWindowDimensions();
-  const { pageStore, userStore } = useStores();
+  const { userStore } = useStores();
   const toast = useToast();
 
   const addToCart = async (id) => {
@@ -50,7 +50,7 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
     let newCart;
 
     if (isInCart) {
-      newCart = userStore.cart.filter((item) => item?.id != obj?.id);
+      newCart = userStore.cart?.filter((item) => item?.id != obj?.id);
       toast({
         title: "Товар удален из корзины",
         status: "info",
@@ -122,7 +122,7 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
         <ModalCloseButton color={"rgba(248, 250, 252, 1)"} />
         <VStack marginTop={"30px"} gap={0}>
           <Image
-            src={`http://85.192.60.217:8000/${obj?.picture_url}`}
+            src={`http://212.41.9.251:8013/${obj?.picture_url}`}
             borderRadius={"8px"}
           />
           <Stack
@@ -161,19 +161,22 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
             >
               <HStack marginLeft={"20px"}>
                 <Text
-                  textDecoration={obj?.price == "0" ? "none" : "line-through"}
+                  textDecoration={
+                    obj?.price == "0" || obj?.discount == "0"
+                      ? "none"
+                      : "line-through"
+                  }
                   color={
                     obj?.price == "0"
                       ? "rgba(248, 250, 252, 1)"
                       : "rgba(0, 84, 87, 1)"
                   }
-                  fontSize={"20px"}
                 >
                   {obj?.price == "0" ? "Free" : `${obj?.price} ₽`}
                 </Text>
-                {obj?.price == "0" || userStore.boughts.length != 0 ? null : (
+                {obj?.price == "0" || obj?.discount == "0" ? null : (
                   <Text color={"rgba(248, 250, 252, 1)"}>
-                    {parseInt(Number(obj?.price * 0.95))} ₽
+                    {parseInt(Number(obj?.price * (1 - obj?.discount / 100)))} ₽
                   </Text>
                 )}
               </HStack>
@@ -207,7 +210,7 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
             overflowX={"scroll"}
             padding={"10px 0"}
           >
-            {obj?.genre.split(",").map((item, index) => {
+            {obj?.genre?.split(",")?.map((item, index) => {
               return (
                 <Stack
                   key={index}
@@ -223,6 +226,7 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
                     color={"rgba(50, 139, 255, 1)"}
                     fontSize={"14px"}
                     fontWeight={"500"}
+                    width={"max-content"}
                   >
                     {item}
                   </Text>
@@ -239,7 +243,7 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
             overflowX={"scroll"}
             padding={"10px 0"}
           >
-            {obj?.platforms.split(",").map((item, index) => (
+            {obj?.platforms?.split(",")?.map((item, index) => (
               <Image
                 src={item == "windows" ? windowIcon : macIcon}
                 key={index}

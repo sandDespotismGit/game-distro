@@ -5,9 +5,10 @@ import {
   HStack,
   Image,
   Text,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect } from "react";
 
 import useWindowDimensions from "./windowDimensions";
 
@@ -24,16 +25,29 @@ const Cart = observer(({ isBuy }) => {
 
   const { width, height } = useWindowDimensions();
   const { pageStore, userStore } = useStores();
+  const toast = useToast();
 
-  const sumWithSale = userStore.cart.reduce(
-    (sum, obj) => sum + Number(obj?.price) * 0.95,
-    0
-  );
+  const getSumCartDiscount = () => {
+    const sumCartDiscount = userStore.cart.reduce(
+      (sum, obj) =>
+        sum + Number(obj?.price) * (1 - Number(obj?.discount) / 100),
+      0
+    );
+    return sumCartDiscount;
+  };
 
-  const sumCart = userStore.cart.reduce(
-    (sum, obj) => sum + Number(obj?.price),
-    0
-  );
+  const getSumCart = () => {
+    const sumCart = userStore.cart.reduce(
+      (sum, obj) => sum + Number(obj?.price),
+      0
+    );
+    return sumCart;
+  };
+
+  useEffect(() => {
+    pageStore.updateSumCart(getSumCart());
+    pageStore.updateSumCartWithDiscount(getSumCartDiscount());
+  }, [userStore.cart]);
 
   return (
     <>
@@ -82,11 +96,6 @@ const Cart = observer(({ isBuy }) => {
               ? "1px solid rgba(56, 72, 87, 1)"
               : null
           }
-          // borderTop={
-          //   pageStore.is_open_cart && width > 600
-          //     ? "1px solid rgba(56, 72, 87, 1)"
-          //     : "none"
-          // }
         >
           <VStack
             position={"relative"}
@@ -132,8 +141,17 @@ const Cart = observer(({ isBuy }) => {
                     border: "1px solid rgba(112, 239, 222, 1)",
                   }}
                   onClick={() => {
-                    navigate("/buy");
-                    pageStore.updateOpenCart(false);
+                    if (userStore.auth_token) {
+                      navigate("/buy");
+                      pageStore.updateOpenCart(false);
+                    } else {
+                      toast({
+                        description: "Войдите в аккаунт, чтобы сделать покупку",
+                        status: "error",
+                        duration: "2000",
+                        isClosable: true,
+                      });
+                    }
                   }}
                 >
                   <Text
@@ -145,9 +163,42 @@ const Cart = observer(({ isBuy }) => {
                   </Text>
                 </Button>
                 <Text color={"white"} marginTop={"10px"} width={"max-content"}>
-                  Сумма:{" "}
-                  {userStore.boughts == 0 ? parseInt(sumWithSale) : sumCart} ₽
+                  Сумма без учета скидок: {pageStore.sum_cart} ₽
                 </Text>
+                <Text color={"white"} marginTop={"4px"} width={"max-content"}>
+                  Сумма с учетом скидок: {pageStore.sum_cart_discount} ₽
+                </Text>
+                {userStore?.boughts > 0 && (
+                  <Text
+                    color={"white"}
+                    marginTop={"4px"}
+                    width={"max-content"}
+                    fontWeight={"600"}
+                  >
+                    Итого: {pageStore.sum_cart_discount} ₽
+                  </Text>
+                )}
+
+                {userStore.boughts.length > 0 ? null : (
+                  <>
+                    <Text
+                      color={"white"}
+                      marginTop={"4px"}
+                      width={"max-content"}
+                    >
+                      Скидка новому пользователю: 5%
+                    </Text>
+                    <Text
+                      color={"white"}
+                      marginTop={"4px"}
+                      width={"max-content"}
+                      fontWeight={"600"}
+                    >
+                      Итого: {parseInt(pageStore.sum_cart_discount * 0.95)} ₽
+                    </Text>
+                  </>
+                )}
+
                 <Grid
                   gridTemplateColumns={"1fr 1fr"}
                   justifyContent={"flex-start"}
@@ -159,7 +210,6 @@ const Cart = observer(({ isBuy }) => {
                   overflowY={"scroll"}
                   marginBottom={"250px"}
                   paddingRight={width >= 600 ? "10px" : 0}
-                  // border={"1px solid red"}
                 >
                   {userStore?.cart != 0 &&
                     userStore.cart?.map((item, index) => (

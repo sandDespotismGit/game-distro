@@ -7,15 +7,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import game from "./../images/game.png";
-import useWindowDimensions from "./windowDimensions";
 import { observer } from "mobx-react-lite";
 import { useStores } from "../store/store_context";
 import base_url from "../store/vars";
 
 const CartProductCard = observer(({ obj }) => {
-  const { width } = useWindowDimensions();
-  const { pageStore, userStore } = useStores();
+  const { userStore } = useStores();
   const toast = useToast();
 
   const deleteToCart = async () => {
@@ -39,7 +36,7 @@ const CartProductCard = observer(({ obj }) => {
     let newCart;
 
     if (isInCart) {
-      newCart = userStore.cart.filter((item) => item?.id != obj?.id);
+      newCart = userStore.cart?.filter((item) => item?.id != obj?.id);
       toast({
         title: "Товар удален из корзины",
         status: "info",
@@ -74,7 +71,7 @@ const CartProductCard = observer(({ obj }) => {
       gap={0}
     >
       <Image
-        src={`http://85.192.60.217:8000/${obj?.picture_url}`}
+        src={`http://212.41.9.251:8013/${obj?.picture_url}`}
         height={"100px"}
         borderTopRadius={"6px"}
       />
@@ -98,18 +95,27 @@ const CartProductCard = observer(({ obj }) => {
           >
             {obj?.name}
           </Text>
-          <Text
-            color={"rgba(248, 250, 252, 1)"}
-            fontWeight={"500"}
-            fontSize={"16px"}
-            width={"max-content"}
-          >
-            {obj?.price == "0"
-              ? "Free"
-              : userStore.boughts?.length == 0
-              ? `${parseInt(Number(obj?.price * 0.95))} ₽`
-              : `${obj?.price} ₽`}
-          </Text>
+          <HStack>
+            <Text
+              textDecoration={
+                obj?.price == "0" || obj?.discount == "0"
+                  ? "none"
+                  : "line-through"
+              }
+              color={
+                obj?.price == "0"
+                  ? "rgba(248, 250, 252, 1)"
+                  : "rgba(0, 84, 87, 1)"
+              }
+            >
+              {obj?.price == "0" ? "Free" : `${obj?.price} ₽`}
+            </Text>
+            {obj?.price == "0" || obj?.discount == "0" ? null : (
+              <Text color={"rgba(248, 250, 252, 1)"}>
+                {parseInt(Number(obj?.price * (1 - obj?.discount / 100)))} ₽
+              </Text>
+            )}
+          </HStack>
         </VStack>
       </HStack>
       <Button

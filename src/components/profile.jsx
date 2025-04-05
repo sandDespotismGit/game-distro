@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { useStores } from "../store/store_context";
 import ModalIncreaseBalance from "./modal_increase_balance";
+import Cookies from "js-cookie";
 
 const Profile = observer(({ isBuy }) => {
   const { width, height } = useWindowDimensions();
@@ -277,6 +278,7 @@ const Profile = observer(({ isBuy }) => {
                 userStore.resetUser();
                 pageStore.resetFilters();
                 navigate("/auth");
+                Cookies.remove("auth_token");
               }}
             >
               <Text

@@ -9,7 +9,6 @@ import AuthPage from "./pages/auth_page";
 import BioPage from "./pages/bio_page";
 import theme from "./theme";
 import EditProfilePage from "./pages/edit_profile_page";
-import OrderPage from "./pages/order_page";
 import BuyPage from "./pages/buy_page";
 import RecomendationPage from "./pages/recomedenation_page";
 
@@ -29,10 +28,6 @@ const router = createHashRouter([
   {
     path: "/edit_profile",
     element: <EditProfilePage />,
-  },
-  {
-    path: "/order",
-    element: <OrderPage />,
   },
   {
     path: "/buy",

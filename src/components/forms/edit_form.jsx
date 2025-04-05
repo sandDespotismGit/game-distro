@@ -147,7 +147,6 @@ const EditForm = observer(() => {
     return formattedValue;
   };
 
-  console.log("cards", userStore.user_info);
   return (
     <>
       <Fade in={showForm} unmountOnExit>
@@ -185,7 +184,6 @@ const EditForm = observer(() => {
           >
             {({ values, errors, touched, handleChange, handleBlur }) => (
               <Form>
-                {console.log(values)}
                 <VStack
                   width={
                     width >= 1440
@@ -339,7 +337,15 @@ const EditForm = observer(() => {
                         <Text
                           color={"rgba(248, 250, 252, 1)"}
                           fontWeight={"500"}
-                          onClick={() => toggleForm("password")}
+                          onClick={() =>
+                            toast({
+                              description:
+                                "Чтобы сменить пароль, воспользуйтесь восстановлением пароля (забыли пароль?) на странице входа в аккаунт",
+                              status: "info",
+                              duration: "2000",
+                              isClosable: true,
+                            })
+                          }
                         >
                           Сменить пароль
                         </Text>

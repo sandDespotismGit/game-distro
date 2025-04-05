@@ -31,54 +31,62 @@ import windows from "./../images/windows_icon.svg";
 import mac from "./../images/apple_icon.svg";
 import ModalEditProduct from "../components/modal_edit_product";
 import ModalDeleteProduct from "../components/modal_delete_product";
+import Cookies from "js-cookie";
 
 const MainPage = observer(() => {
   const { pageStore, userStore } = useStores();
   const { width } = useWindowDimensions();
 
-  useEffect(() => {
-    pageStore.getAllGames();
-  }, []);
-
   const getUniqueGenres = (products) => {
-    const allGenres = products.flatMap((product) => product?.genre?.split(","));
+    let allGenres = "";
+    if (products?.length > 0) {
+      allGenres = products?.flatMap((product) => product?.genre?.split(","));
+    }
+
     return [...new Set(allGenres)];
   };
 
   const uniqueGenres = getUniqueGenres(pageStore.all_products);
 
-  const filterProductByProducer = pageStore.all_products.filter(
-    (item) => item.producer_name == userStore.user_info?.username
-  );
+  const filterProductByProducer =
+    pageStore.all_products?.length > 0
+      ? pageStore.all_products?.filter(
+          (item) => item.producer_name == userStore.user_info?.username
+        )
+      : null;
 
   const applyFilters = () => {
     let copyProducts = [...pageStore.all_products];
 
     if (pageStore.selected_genre) {
-      copyProducts = copyProducts.filter((item) =>
+      copyProducts = copyProducts?.filter((item) =>
         item?.genre.includes(pageStore.selected_genre)
       );
     }
     if (pageStore.selected_producer) {
-      copyProducts = copyProducts.filter(
+      copyProducts = copyProducts?.filter(
         (item) => item?.producer_name == pageStore.selected_producer
       );
     }
     if (pageStore.min_price) {
-      copyProducts = copyProducts.filter(
-        (item) => Number(item?.price) >= Number(pageStore.min_price)
+      copyProducts = copyProducts?.filter(
+        (item) =>
+          Number(item?.price * (1 - Number(item?.discount) / 100)) >=
+          Number(pageStore.min_price)
       );
     }
 
     if (pageStore.max_price) {
-      copyProducts = copyProducts.filter(
-        (item) => Number(item?.price) <= Number(pageStore.max_price)
+      copyProducts = copyProducts?.filter(
+        (item) =>
+          Number(item?.price) * (1 - Number(item?.discount) / 100) <=
+          Number(pageStore.max_price)
       );
     }
 
     if (pageStore.search_bar) {
       const searchLower = pageStore.search_bar.toLowerCase();
-      copyProducts = copyProducts.filter((item) => {
+      copyProducts = copyProducts?.filter((item) => {
         return item?.name?.toLowerCase().includes(searchLower) ?? false;
       });
     }
@@ -95,15 +103,45 @@ const MainPage = observer(() => {
     } else if (pageStore.sort[1] == 1) {
       copy_products.sort((a, b) => b.name.localeCompare(a.name));
     } else if (pageStore.sort[2] == 1) {
-      copy_products.sort((a, b) => Number(a.price) - Number(b.price));
+      copy_products.sort(
+        (a, b) =>
+          Number(a.price) * (1 - Number(a.discount) / 100) -
+          Number(b.price) * (1 - Number(b.discount) / 100)
+      );
     } else {
-      copy_products.sort((a, b) => Number(b.price) - Number(a.price));
+      copy_products.sort(
+        (a, b) =>
+          Number(b.price) * (1 - Number(b.discount) / 100) -
+          Number(a.price) * (1 - Number(a.discount) / 100)
+      );
     }
 
     return copy_products;
   };
 
   let sorted = sortProduct(filtered);
+
+  useEffect(() => {
+    pageStore.getAllGames();
+    const checkAuth = async () => {
+      const token = Cookies.get("auth_token");
+      if (!token) {
+        return;
+      }
+
+      const isValid = await userStore.getMe(token);
+      if (isValid) {
+        userStore.getMe(token);
+        userStore.getCart(token);
+        userStore.getBought(token);
+        userStore.updateToken(token);
+      } else {
+        Cookies.remove("auth_token");
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   return (
     <VStack
@@ -183,7 +221,7 @@ const MainPage = observer(() => {
                   Все жанры
                 </Text>
               </Stack>
-              {uniqueGenres.map((item, index) => (
+              {uniqueGenres?.map((item, index) => (
                 <Stack
                   key={index}
                   onClick={() => pageStore.updateSelectedGenre(item)}
@@ -233,7 +271,7 @@ const MainPage = observer(() => {
               margin={"6px 0 16px 0"}
             >
               {sorted.length != 0
-                ? sorted.map((item, index) => (
+                ? sorted?.map((item, index) => (
                     <GridItem key={index}>
                       <ProductCard obj={item} />
                     </GridItem>
@@ -280,6 +318,9 @@ const MainPage = observer(() => {
                   <Text>Цена</Text>
                 </Th>
                 <Th color={"rgba(248, 250, 252, 1)"}>
+                  <Text>Цена со скидкой</Text>
+                </Th>
+                <Th color={"rgba(248, 250, 252, 1)"}>
                   <Text>Кол-во продаж</Text>
                 </Th>
                 <Th color={"rgba(248, 250, 252, 1)"}>
@@ -295,10 +336,9 @@ const MainPage = observer(() => {
             </Thead>
             <Tbody>
               {filterProductByProducer?.length != 0 &&
-                filterProductByProducer.map((elem, index) => {
+                filterProductByProducer?.map((elem, index) => {
                   return (
                     <Tr color={"rgba(248, 250, 252, 1)"} key={index}>
-                      {console.log(elem?.picture_url)}
                       <Td>
                         <Text>{elem?.id}</Text>
                       </Td>
@@ -310,7 +350,7 @@ const MainPage = observer(() => {
                       </Td>
                       <Td>
                         <HStack gap={"3px"}>
-                          {elem?.platforms.split(",").map((item, index) => (
+                          {elem?.platforms?.split(",")?.map((item, index) => (
                             <Image
                               src={item == "windows" ? windows : mac}
                               key={index}
@@ -326,10 +366,15 @@ const MainPage = observer(() => {
                         />
                       </Td>
                       <Td>
+                        <Text width={"max-content"}>
+                          {elem?.price == "0" ? "Free" : `${elem?.price} ₽`}
+                        </Text>
+                      </Td>
+                      <Td>
                         <Text>
-                          {elem?.price == "0"
-                            ? "Бесплатно"
-                            : `${elem?.price} ₽`}
+                          {Number(elem?.price) *
+                            Number(1 - elem.discount / 100)}{" "}
+                          ₽ ({elem.discount}%)
                         </Text>
                       </Td>
                       <Td>
@@ -338,7 +383,7 @@ const MainPage = observer(() => {
                       </Td>
                       <Td>
                         <Image
-                          src={`http://85.192.60.217:8000/${elem?.picture_url}`}
+                          src={`http://212.41.9.251:8013/${elem?.picture_url}`}
                           alt="Нет картинки"
                           height={"80px"}
                           borderRadius={"8px"}
