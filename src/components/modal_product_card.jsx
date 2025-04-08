@@ -19,6 +19,7 @@ import windowIcon from "./../images/windows_icon.svg";
 import { observer } from "mobx-react-lite";
 import { useStores } from "../store/store_context";
 import base_url from "../store/vars";
+import downloadIcon from "./../images/download.svg";
 
 const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
   const { width } = useWindowDimensions();
@@ -38,7 +39,7 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
       },
     });
     if (response.ok) {
-      await userStore.getCart();
+      await userStore.getCart(userStore?.auth_token);
     }
     return response.ok;
   };
@@ -100,6 +101,11 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
       }
     }
   };
+
+  const handleDownload = () => {
+    window.open(`http://212.41.9.251:8013/${obj?.bin_url}`, "_blank");
+  };
+
   return (
     <Modal
       blockScrollOnMount
@@ -191,11 +197,19 @@ const ModalProductCard = observer(({ isOpen, onOpen, onClose, obj = {} }) => {
                 padding={"0 10px"}
                 width={"40%"}
                 onClick={async () =>
-                  userStore.auth_token ? await handleCart() : handleToTempCart()
+                  userStore.boughts?.find((item) => item?.id == obj?.id)
+                    ? handleDownload()
+                    : userStore.auth_token
+                    ? await handleCart()
+                    : handleToTempCart()
                 }
               >
                 <Text color={"rgba(248, 250, 252, 1)"} fontWeight={"500"}>
-                  {isInCart ? "Убрать" : "В корзину"}
+                  {userStore.boughts?.find((item) => item?.id == obj.id)
+                    ? "Скачать"
+                    : isInCart
+                    ? "Убрать"
+                    : "В корзину"}
                 </Text>
               </Button>
             </HStack>

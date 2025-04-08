@@ -14,8 +14,9 @@ import * as Yup from "yup";
 
 import useWindowDimensions from "../windowDimensions";
 import { useStores } from "../../store/store_context";
+import { observer } from "mobx-react-lite";
 
-const BioForm = () => {
+const BioForm = observer(() => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
@@ -259,6 +260,6 @@ const BioForm = () => {
       )}
     </Formik>
   );
-};
+});
 
 export default BioForm;

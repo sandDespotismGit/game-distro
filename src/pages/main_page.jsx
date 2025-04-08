@@ -56,19 +56,19 @@ const MainPage = observer(() => {
       : null;
 
   const applyFilters = () => {
-    let copyProducts = [...pageStore.all_products];
+    let copyProducts = Array.from(pageStore.all_products);
 
-    if (pageStore.selected_genre) {
+    if (pageStore.selected_genre && copyProducts?.length > 0) {
       copyProducts = copyProducts?.filter((item) =>
         item?.genre.includes(pageStore.selected_genre)
       );
     }
-    if (pageStore.selected_producer) {
+    if (pageStore.selected_producer && copyProducts?.length > 0) {
       copyProducts = copyProducts?.filter(
         (item) => item?.producer_name == pageStore.selected_producer
       );
     }
-    if (pageStore.min_price) {
+    if (pageStore.min_price && copyProducts?.length > 0) {
       copyProducts = copyProducts?.filter(
         (item) =>
           Number(item?.price * (1 - Number(item?.discount) / 100)) >=
@@ -76,7 +76,7 @@ const MainPage = observer(() => {
       );
     }
 
-    if (pageStore.max_price) {
+    if (pageStore.max_price && copyProducts?.length > 0) {
       copyProducts = copyProducts?.filter(
         (item) =>
           Number(item?.price) * (1 - Number(item?.discount) / 100) <=
@@ -97,7 +97,8 @@ const MainPage = observer(() => {
   const filtered = applyFilters();
 
   const sortProduct = (arr) => {
-    const copy_products = [...arr];
+    let copy_products = Array.from(arr);
+
     if (pageStore.sort[0] == 1) {
       copy_products.sort((a, b) => a.name.localeCompare(b.name));
     } else if (pageStore.sort[1] == 1) {
@@ -128,13 +129,12 @@ const MainPage = observer(() => {
       if (!token) {
         return;
       }
-
       const isValid = await userStore.getMe(token);
+      console.log(isValid);
       if (isValid) {
-        userStore.getMe(token);
-        userStore.getCart(token);
-        userStore.getBought(token);
         userStore.updateToken(token);
+        await userStore.getCart(token);
+        await userStore.getBought(token);
       } else {
         Cookies.remove("auth_token");
       }
@@ -327,6 +327,9 @@ const MainPage = observer(() => {
                   <Text>Изображение</Text>
                 </Th>
                 <Th color={"rgba(248, 250, 252, 1)"}>
+                  <Text>Установочный файл</Text>
+                </Th>
+                <Th color={"rgba(248, 250, 252, 1)"}>
                   <Text>Дата выхода</Text>
                 </Th>
                 <Th color={"rgba(248, 250, 252, 1)"}>
@@ -389,6 +392,7 @@ const MainPage = observer(() => {
                           borderRadius={"8px"}
                         />
                       </Td>
+                      <Td>{elem?.bin_url || "Нет файла"}</Td>
                       <Td>
                         <Text>{new Date(elem?.date).toLocaleDateString()}</Text>
                       </Td>

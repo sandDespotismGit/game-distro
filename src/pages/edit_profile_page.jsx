@@ -2,8 +2,9 @@ import { Stack, VStack } from "@chakra-ui/react";
 
 import Header from "../components/header";
 import EditForm from "../components/forms/edit_form";
+import { observer } from "mobx-react-lite";
 
-const EditProfilePage = () => {
+const EditProfilePage = observer(() => {
   return (
     <VStack
       width={"100%"}
@@ -19,6 +20,6 @@ const EditProfilePage = () => {
       </Stack>
     </VStack>
   );
-};
+});
 
 export default EditProfilePage;

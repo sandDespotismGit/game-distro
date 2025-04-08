@@ -28,6 +28,7 @@ const ModalAddProduct = observer(() => {
   const toast = useToast();
 
   const [file, setFile] = useState("");
+  const [bin, setBin] = useState("");
 
   const createGame = async (
     auth_token,
@@ -55,6 +56,12 @@ const ModalAddProduct = observer(() => {
     await pageStore.addPhotoToGame(id, userStore.auth_token, formData);
   };
 
+  const addBin = async (id, bin) => {
+    const formData = new FormData();
+    formData.append("bins", bin);
+    await pageStore.addBinToGame(id, userStore.auth_token, formData);
+  };
+
   const handleCreateGame = async (values) => {
     const result = await createGame(
       userStore.auth_token,
@@ -74,7 +81,9 @@ const ModalAddProduct = observer(() => {
         isClosable: true,
       });
       await addPhoto(result?.id, file[0]);
+      await addBin(result?.id, bin[0]);
       setFile("");
+      setBin("");
       onClose();
     } else {
       toast({
@@ -86,6 +95,8 @@ const ModalAddProduct = observer(() => {
       });
     }
   };
+
+  console.log(bin);
 
   return (
     <>
@@ -334,11 +345,9 @@ const ModalAddProduct = observer(() => {
                       fontFamily={"Inter"}
                       type="file"
                       accept="image/*"
-                      //   name="image"
                       height={"40px"}
                       width={"max-content"}
                       background={"rgba(14, 18, 22, 1)"}
-                      //   border={"1px solid rgba(56, 72, 87, 1)"}
                       border={"none"}
                       borderRadius={"8px"}
                       color={"rgba(248, 250, 252, 1)"}
@@ -346,6 +355,27 @@ const ModalAddProduct = observer(() => {
                         color: "rgba(148, 163, 184, 1)",
                       }}
                       onChange={(e) => setFile(e.target.files)}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <Text fontWeight={"500"} color={"rgba(248, 250, 252, 1)"}>
+                      Установочный файл
+                    </Text>
+                    <Input
+                      marginTop={"4px"}
+                      fontFamily={"Inter"}
+                      type="file"
+                      accept="application/x-msdownload"
+                      height={"40px"}
+                      width={"max-content"}
+                      background={"rgba(14, 18, 22, 1)"}
+                      border={"none"}
+                      borderRadius={"8px"}
+                      color={"rgba(248, 250, 252, 1)"}
+                      _placeholder={{
+                        color: "rgba(148, 163, 184, 1)",
+                      }}
+                      onChange={(e) => setBin(e.target.files)}
                     />
                   </FormControl>
 

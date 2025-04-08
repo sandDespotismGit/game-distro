@@ -11,9 +11,10 @@ const RecomendationPage = observer(() => {
   const { width } = useWindowDimensions();
 
   const sortProducts = () => {
-    const copyProducts = [...pageStore.all_products];
-    copyProducts.sort((a, b) => Number(b.sales) - Number(a.sales));
-
+    let copyProducts = Array.from(pageStore.all_products);
+    if (copyProducts?.length > 0) {
+      copyProducts.sort((a, b) => Number(b.sales) - Number(a.sales));
+    }
     return copyProducts;
   };
 

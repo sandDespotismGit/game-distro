@@ -87,10 +87,6 @@ class userStore {
         secure: false, // Только HTTPS (если не localhost)
         sameSite: "strict", // Защита от CSRF
       });
-
-      await this.getMe(this.auth_token);
-      await this.getCart(this.auth_token);
-      await this.getBought(this.auth_token);
     }
 
     return response.ok;
@@ -222,6 +218,7 @@ class userStore {
       },
     });
     const result = await response.json();
+    console.log(result);
     this.boughts = result;
   };
 

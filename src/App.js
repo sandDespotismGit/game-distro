@@ -11,6 +11,7 @@ import theme from "./theme";
 import EditProfilePage from "./pages/edit_profile_page";
 import BuyPage from "./pages/buy_page";
 import RecomendationPage from "./pages/recomedenation_page";
+import PurchaseHistoryPage from "./pages/purchase_history_page";
 
 const router = createHashRouter([
   {
@@ -36,6 +37,10 @@ const router = createHashRouter([
   {
     path: "/recomendation",
     element: <RecomendationPage />,
+  },
+  {
+    path: "/purchase_history",
+    element: <PurchaseHistoryPage />,
   },
 ]);
 

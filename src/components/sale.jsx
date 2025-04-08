@@ -7,8 +7,9 @@ import useWindowDimensions from "./windowDimensions";
 import backSale from "./../images/back_sale.png";
 import saleIcon from "./../images/sale_icon.svg";
 import closeIcon from "./../images/close_icon.svg";
+import { observer } from "mobx-react-lite";
 
-const Sale = () => {
+const Sale = observer(() => {
   const [isVisible, setIsVisible] = useState(true);
 
   const { width } = useWindowDimensions();
@@ -56,6 +57,6 @@ const Sale = () => {
       />
     </HStack>
   );
-};
+});
 
 export default Sale;

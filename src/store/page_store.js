@@ -152,6 +152,21 @@ class pageStore {
     }
   };
 
+  addBinToGame = async (id, auth_token, formData) => {
+    const response = await fetch(`${base_url}/bins/${id}`, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${auth_token}`,
+      },
+      body: formData,
+    });
+    if (response.ok) {
+      await this.getAllGames();
+    }
+    console.log("bin ", response.ok);
+  };
+
   updateGame = async (id, auth_token, values) => {
     const response = await fetch(`${base_url}/games/${id}`, {
       method: "PUT",

@@ -20,6 +20,8 @@ import { observer } from "mobx-react-lite";
 import { useStores } from "../store/store_context";
 import base_url from "../store/vars";
 
+import downloadIcon from "./../images/download.svg";
+
 const ProductCard = observer(({ obj = {} }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { userStore } = useStores();
@@ -40,7 +42,7 @@ const ProductCard = observer(({ obj = {} }) => {
       },
     });
     if (response.ok) {
-      await userStore.getCart();
+      await userStore.getCart(userStore?.auth_token);
     }
     return response.ok;
   };
@@ -101,6 +103,10 @@ const ProductCard = observer(({ obj = {} }) => {
         });
       }
     }
+  };
+
+  const handleDownload = () => {
+    window.open(`http://212.41.9.251:8013/${obj?.bin_url}`, "_blank");
   };
 
   return (
@@ -212,6 +218,7 @@ const ProductCard = observer(({ obj = {} }) => {
             <Text
               fontSize={width >= 1440 ? "20px" : ["14px", "14px", "20px"]}
               fontWeight={"600"}
+              width={"max-content"}
               color={
                 obj?.price == "0"
                   ? "rgba(112, 239, 222, 1)"
@@ -240,6 +247,7 @@ const ProductCard = observer(({ obj = {} }) => {
                   fontSize={width >= 1440 ? "20px" : ["14px", "14px", "20px"]}
                   fontWeight={"600"}
                   lineHeight={"24px"}
+                  width={"max-content"}
                 >
                   {parseInt(Number(obj?.price * (1 - obj?.discount / 100)))} ₽
                 </Text>
@@ -248,11 +256,22 @@ const ProductCard = observer(({ obj = {} }) => {
           </HStack>
 
           <Image
-            src={isInCart ? activeCartIcon : cartIcon}
+            src={
+              userStore.boughts?.find((item) => item?.id == obj.id)
+                ? downloadIcon
+                : isInCart
+                ? activeCartIcon
+                : cartIcon
+            }
             zIndex={10}
             cursor={"pointer"}
+            width={"24px"}
             onClick={async () =>
-              userStore.auth_token ? await handleCart() : handleToTempCart()
+              userStore.boughts?.find((item) => item?.id == obj?.id)
+                ? handleDownload()
+                : userStore.auth_token
+                ? await handleCart()
+                : handleToTempCart()
             }
           />
         </HStack>

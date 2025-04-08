@@ -24,12 +24,12 @@ const CartProductCard = observer(({ obj }) => {
       },
     });
     if (response.ok) {
-      await userStore.getCart();
+      await userStore.getCart(userStore?.auth_token);
     }
     return response.ok;
   };
 
-  const isInCart = userStore.cart.some((item) => item?.id == obj?.id);
+  const isInCart = userStore.cart?.some((item) => item?.id == obj?.id);
 
   // для незарегистрированного пользователя
   const handleToTempCart = () => {

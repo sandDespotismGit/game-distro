@@ -22,7 +22,9 @@ const Header = observer(({ router, isBuy }) => {
         justify={"space-between"}
         padding={"8px 32px"}
         borderBottom={
-          (userStore.user_info?.is_seller && router != "login") || isBuy
+          (userStore.user_info?.is_seller && router != "login") ||
+          isBuy ||
+          router == "purchase"
             ? "1px solid rgba(56, 72, 87, 1)"
             : null
         }
@@ -38,8 +40,8 @@ const Header = observer(({ router, isBuy }) => {
         />
         {router != "login" ? (
           <HStack gap={"16px"}>
-            {!userStore.user_info?.is_seller && <Cart isBuy={isBuy} />}
-            {userStore.auth_token != "" && <Profile isBuy={isBuy} />}
+            {!userStore.user_info?.is_seller && <Cart isBuy={isBuy} router/>}
+            {userStore.auth_token != "" && <Profile isBuy={isBuy} router/>}
 
             {userStore.auth_token == "" && (
               <Text
@@ -65,7 +67,8 @@ const Header = observer(({ router, isBuy }) => {
       {router != "login" &&
       router != "profile" &&
       !userStore.user_info?.is_seller &&
-      router != "buy" ? (
+      router != "buy" &&
+      router != "purchase" ? (
         <HStack
           background={"rgba(26, 32, 40, 1)"}
           height={"64px"}

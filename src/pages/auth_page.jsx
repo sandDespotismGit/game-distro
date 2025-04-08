@@ -2,8 +2,9 @@ import { Stack, VStack } from "@chakra-ui/react";
 
 import Header from "../components/header";
 import AuthForm from "../components/forms/auth_form";
+import { observer } from "mobx-react-lite";
 
-const AuthPage = () => {
+const AuthPage = observer(() => {
   return (
     <VStack
       width={"100%"}
@@ -19,6 +20,6 @@ const AuthPage = () => {
       </Stack>
     </VStack>
   );
-};
+});
 
 export default AuthPage;

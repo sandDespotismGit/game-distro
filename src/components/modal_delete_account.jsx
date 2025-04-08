@@ -14,8 +14,9 @@ import base_url from "./../store/vars";
 import { useState } from "react";
 import { useStores } from "../store/store_context";
 import { useNavigate } from "react-router-dom";
+import { observer } from "mobx-react-lite";
 
-const ModalDeleteAccount = () => {
+const ModalDeleteAccount = observer(() => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { userStore } = useStores();
   const navigate = useNavigate();
@@ -123,6 +124,6 @@ const ModalDeleteAccount = () => {
       </Modal>
     </>
   );
-};
+});
 
 export default ModalDeleteAccount;

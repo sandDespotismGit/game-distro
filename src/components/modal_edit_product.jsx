@@ -25,6 +25,7 @@ import { useStores } from "../store/store_context";
 const ModalEditProduct = observer(({ obj = {} }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [file, setFile] = useState("");
+  const [bin, setBin] = useState("");
   const { pageStore, userStore } = useStores();
   const toast = useToast();
 
@@ -32,10 +33,18 @@ const ModalEditProduct = observer(({ obj = {} }) => {
     return await pageStore.updateGame(obj?.id, userStore.auth_token, values);
   };
 
-  const addPhoto = async (image) => {
+  console.log(bin);
+
+  const addPhoto = async (id, image) => {
     const formData = new FormData();
     formData.append("image", image);
-    await pageStore.addPhotoToGame(obj?.id, userStore.auth_token, formData);
+    await pageStore.addPhotoToGame(id, userStore.auth_token, formData);
+  };
+
+  const addBin = async (id, bin) => {
+    const formData = new FormData();
+    formData.append("bins", bin);
+    await pageStore.addBinToGame(id, userStore.auth_token, formData);
   };
 
   const handleUpdateGame = async (values) => {
@@ -48,8 +57,10 @@ const ModalEditProduct = observer(({ obj = {} }) => {
         duration: 2000,
         isClosable: true,
       });
-      await addPhoto(file[0]);
+      await addPhoto(obj?.id, file[0]);
+      await addBin(obj?.id, bin[0]);
       setFile("");
+      setBin("");
       onClose();
     } else {
       toast({
@@ -311,11 +322,9 @@ const ModalEditProduct = observer(({ obj = {} }) => {
                       fontFamily={"Inter"}
                       type="file"
                       accept="image/*"
-                      //   name="image"
                       height={"40px"}
                       width={"max-content"}
                       background={"rgba(14, 18, 22, 1)"}
-                      //   border={"1px solid rgba(56, 72, 87, 1)"}
                       border={"none"}
                       borderRadius={"8px"}
                       color={"rgba(248, 250, 252, 1)"}
@@ -324,7 +333,28 @@ const ModalEditProduct = observer(({ obj = {} }) => {
                       }}
                       onChange={(e) => setFile(e.target.files)}
                     />
-                    {/* <Image src={file} /> */}
+                  </FormControl>
+
+                  <FormControl>
+                    <Text fontWeight={"500"} color={"rgba(248, 250, 252, 1)"}>
+                      Установочный файл
+                    </Text>
+                    <Input
+                      marginTop={"4px"}
+                      fontFamily={"Inter"}
+                      type="file"
+                      accept="application/x-msdownload"
+                      height={"40px"}
+                      width={"max-content"}
+                      background={"rgba(14, 18, 22, 1)"}
+                      border={"none"}
+                      borderRadius={"8px"}
+                      color={"rgba(248, 250, 252, 1)"}
+                      _placeholder={{
+                        color: "rgba(148, 163, 184, 1)",
+                      }}
+                      onChange={(e) => setBin(e.target.files)}
+                    />
                   </FormControl>
 
                   <HStack justify={"flex-end"} width={"100%"}>

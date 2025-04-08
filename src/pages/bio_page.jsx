@@ -2,8 +2,9 @@ import { Stack, VStack } from "@chakra-ui/react";
 
 import Header from "../components/header";
 import BioForm from "../components/forms/bio_form";
+import { observer } from "mobx-react-lite";
 
-const BioPage = () => {
+const BioPage = observer(() => {
   return (
     <VStack
       width={"100%"}
@@ -19,6 +20,6 @@ const BioPage = () => {
       </Stack>
     </VStack>
   );
-};
+});
 
 export default BioPage;

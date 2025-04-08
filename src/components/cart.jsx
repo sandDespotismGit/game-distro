@@ -20,7 +20,7 @@ import { observer } from "mobx-react-lite";
 import { useStores } from "../store/store_context";
 import { useNavigate } from "react-router-dom";
 
-const Cart = observer(({ isBuy }) => {
+const Cart = observer(({ isBuy, router }) => {
   const navigate = useNavigate();
 
   const { width, height } = useWindowDimensions();
@@ -64,7 +64,7 @@ const Cart = observer(({ isBuy }) => {
       <HStack
         bg={"rgba(0,0,0,0)"}
         position={"fixed"}
-        top={!isBuy ? "104px" : "40px"}
+        top={!isBuy && router == "purchase" ? "104px" : "40px"}
         overflow={"hidden"}
         right={0}
         width={pageStore.is_open_cart ? width : 0}
