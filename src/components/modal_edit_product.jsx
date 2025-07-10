@@ -122,6 +122,7 @@ const ModalEditProduct = observer(({ obj = {} }) => {
               description: obj?.description,
               price: obj?.price,
               discount: obj?.discount,
+              discount: obj?.discount,
             }}
             validationSchema={Yup.object({
               name: Yup.string().required("Обязательное поле"),
@@ -129,6 +130,10 @@ const ModalEditProduct = observer(({ obj = {} }) => {
               platforms: Yup.array().min(1, "Выберите хотя бы одно поле"),
               description: Yup.string().required("Обязательное поле"),
               price: Yup.number().required("Обязательное поле"),
+              discount: Yup.number()
+                .min(0)
+                .max(100)
+                .required("Введите скидку, ноль если скидки нет"),
               discount: Yup.number()
                 .min(0)
                 .max(100)
@@ -155,7 +160,11 @@ const ModalEditProduct = observer(({ obj = {} }) => {
                   bg={"rgba(14, 18, 22, 1)"}
                 >
                   <FormControl isInvalid={errors.name && touched.name}>
-                    <Text fontWeight={"500"} color={"rgba(248, 250, 252, 1)"}>
+                    <Text
+                      fontWeight={"500"}
+                      color={"rgba(248, 250, 252, 1)"}
+                      onClick={() => console.log(obj)}
+                    >
                       Название
                     </Text>
                     <Input
@@ -308,9 +317,6 @@ const ModalEditProduct = observer(({ obj = {} }) => {
                     <FormErrorMessage margin={"2px"} fontSize={"12px"}>
                       {errors.discount}
                     </FormErrorMessage>
-                    <Text color={"white"} fontSize={"12px"} marginTop={"2px"}>
-                      Если скидки нет, то ставь 0
-                    </Text>
                   </FormControl>
 
                   <FormControl>

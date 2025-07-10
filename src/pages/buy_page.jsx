@@ -180,86 +180,85 @@ const BuyPage = observer(() => {
         overflowX={"scroll"}
         padding={"10px 20px"}
       >
-        <Table width={"100%"} border={"2px solid rgba(56, 72, 87, 1)"}>
-          <Thead bg={"rgba(26, 32, 40, 1)"} borderBottom={"none"}>
-            <Tr>
-              <Th color={"rgba(248, 250, 252, 1)"}>
-                <Text>Название</Text>
-              </Th>
-              <Th color={"rgba(248, 250, 252, 1)"}>
-                <Text>Жанр</Text>
-              </Th>
-              <Th color={"rgba(248, 250, 252, 1)"}>
-                <Text>Платформы</Text>
-              </Th>
-              <Th color={"rgba(248, 250, 252, 1)"}>
-                <Text>Описание</Text>
-              </Th>
-              <Th color={"rgba(248, 250, 252, 1)"}>
-                <Text>Цена</Text>
-              </Th>
-              <Th color={"rgba(248, 250, 252, 1)"}>
-                <Text>Изображение</Text>
-              </Th>
-              <Th color={"rgba(248, 250, 252, 1)"}>
-                <Text>Дата выхода</Text>
-              </Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {userStore.cart?.length != 0 &&
-              userStore.cart?.map((elem, index) => {
-                return (
-                  <Tr color={"rgba(248, 250, 252, 1)"} key={index}>
-                    <Td>
-                      <Text>{elem?.name}</Text>
-                    </Td>
-                    <Td>
-                      <Text>{elem?.genre}</Text>
-                    </Td>
-                    <Td>
-                      <HStack gap={"3px"}>
-                        {elem?.platforms?.split(",")?.map((item, index) => (
-                          <Image
-                            src={item == "windows" ? windows : mac}
-                            key={index}
-                          />
-                        ))}
-                      </HStack>
-                    </Td>
-                    <Td width={"400px"}>
-                      <Textarea
-                        disabled={true}
-                        color={"white"}
-                        value={`${elem?.description}`}
-                      />
-                    </Td>
-                    <Td>
-                      <Text>
-                        {elem?.price == "0"
-                          ? "Бесплатно"
-                          : userStore.boughts?.length == 0
-                          ? `${parseInt(Number(elem?.price * 0.95))} ₽`
-                          : `${elem?.price} ₽`}
-                      </Text>
-                    </Td>
-                    <Td>
-                      <Image
-                        src={`http://212.41.9.251:8013/${elem?.picture_url}`}
-                        alt="Нет картинки"
-                        height={"80px"}
-                        borderRadius={"8px"}
-                      />
-                    </Td>
-                    <Td>
-                      <Text>{new Date(elem?.date).toLocaleDateString()}</Text>
-                    </Td>
-                  </Tr>
-                );
-              })}
-          </Tbody>
-        </Table>
-      </VStack>
+        <Thead bg={"rgba(26, 32, 40, 1)"} borderBottom={"none"}>
+          <Tr>
+            <Th color={"rgba(248, 250, 252, 1)"}>
+              <Text>Название</Text>
+            </Th>
+            <Th color={"rgba(248, 250, 252, 1)"}>
+              <Text>Жанр</Text>
+            </Th>
+            <Th color={"rgba(248, 250, 252, 1)"}>
+              <Text>Платформы</Text>
+            </Th>
+            <Th color={"rgba(248, 250, 252, 1)"}>
+              <Text>Описание</Text>
+            </Th>
+            <Th color={"rgba(248, 250, 252, 1)"}>
+              <Text>Цена</Text>
+            </Th>
+            <Th color={"rgba(248, 250, 252, 1)"}>
+              <Text>Изображение</Text>
+            </Th>
+            <Th color={"rgba(248, 250, 252, 1)"}>
+              <Text>Дата выхода</Text>
+            </Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {userStore.cart?.length != 0 &&
+            userStore.cart.map((elem, index) => {
+              return (
+                <Tr color={"rgba(248, 250, 252, 1)"} key={index}>
+                  {console.log(elem?.picture_url)}
+                  <Td>
+                    <Text>{elem?.name}</Text>
+                  </Td>
+                  <Td>
+                    <Text>{elem?.genre}</Text>
+                  </Td>
+                  <Td>
+                    <HStack gap={"3px"}>
+                      {elem?.platforms.split(",").map((item, index) => (
+                        <Image
+                          src={item == "windows" ? windows : mac}
+                          key={index}
+                        />
+                      ))}
+                    </HStack>
+                  </Td>
+                  <Td width={"400px"}>
+                    <Textarea
+                      disabled={true}
+                      color={"white"}
+                      value={`${elem?.description}`}
+                    />
+                  </Td>
+                  <Td>
+                    <Text>
+                      {elem?.price == "0"
+                        ? "Бесплатно"
+                        : userStore.boughts?.length == 0
+                        ? `${parseInt(Number(elem?.price * 0.95))} ₽`
+                        : `${elem?.price} ₽`}
+                    </Text>
+                  </Td>
+                  <Td>
+                    <Image
+                      src={`http://212.41.9.251:8013/${elem?.picture_url}`}
+                      alt="Нет картинки"
+                      height={"80px"}
+                      borderRadius={"8px"}
+                    />
+                  </Td>
+                  <Td>
+                    <Text>{new Date(elem?.date).toLocaleDateString()}</Text>
+                  </Td>
+                </Tr>
+              );
+            })}
+        </Tbody>
+      </Table>
     </VStack>
   );
 });
